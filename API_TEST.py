@@ -1,39 +1,44 @@
 import requests
-import json
 from settings import YANDEX_API_KEY, UJIN_URL, TOKEN, YANDEX_URL
 from fastapi import FastAPI, Request, Header
-from typing import Optional
+from fastapi.responses import JSONResponse
+app = FastAPI()
 
 app = FastAPI()
 
 
-@app.post('/take')
-async def take_coords(lst: dict):
-    print(lst['coords'])
-    return {"status": "success", "received_data": lst}
+@app.post("/api/postBounds")
+async def take_coords(request: Request):
+    data = await request.json()
+    try:
+        if data[0][0] - data[1][0] > 0.02 or data[0][1] - data[1][1] > 0.02:
+
+        print(f"Координаты: {data[0][0] - data[1][0]} {data[0][1] - data[1][1]}")
+        return {
+            "status": "success",
+            "received_data": data
+        }
+
+    except Exception as e:
+        return JSONResponse(
+            status_code=400,
+            content={"error": str(e)}
+        )
 
 
-@app.get('/get')
-async def get_coords():
+@app.get('/api/getBounds')
+async def gege_coords():
     return {'coords': '123'}
 
 
-@app.post('/webhook')
+@app.post("/webhook")
 async def webhook_handler(request: Request):
     try:
         body = await request.json()
-        data = body['ticket']
-        title = data['title']
-        description = data['description']
-        number = data['number']
-        priority = data['priority']
-        status = data['status']
-        sla = data['sla']
-        address_str = ''
-        # if
-        longitude, latitude = get_coordinates_from_address(address_str)
-    except Exception:
-        pass
+        print(body['ticket'])
+    except Exception as e:
+        print("pizda babulke:", str(e))
+        return {"status": 1, "message": str(e), "data": {}, "error": 1}
 
 
 def get_first_request():
