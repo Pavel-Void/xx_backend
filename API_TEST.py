@@ -12,8 +12,7 @@ async def take_coords(request: Request):
     data = await request.json()
     try:
         if data[0][0] - data[1][0] > 0.02 or data[0][1] - data[1][1] > 0.02:
-
-        print(f"Координаты: {data[0][0] - data[1][0]} {data[0][1] - data[1][1]}")
+            print(f"Координаты: {data[0][0] - data[1][0]} {data[0][1] - data[1][1]}")
         return {
             "status": "success",
             "received_data": data
@@ -52,7 +51,7 @@ def get_first_request():
         'token': 'ust-739706-8f86de46f9cfbaaed65294cd6b0f473c',
         "sort": {},
         "text": "",  # Текст для поиска (опционально)
-        "timezone": "Asia/Yekat"
+        "timezone": "Asia/Yekaterinburg"
     }
     response = requests.post(UJIN_URL, json=payload, headers=headers)
     if response.status_code == 200:

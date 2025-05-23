@@ -101,6 +101,23 @@ class IncidentManager:
             cur.execute("SELECT * FROM incidents WHERE status != 'Возвращена';")
             return cur.fetchall()
 
+    def get_find_incidents_from_area(self, lat_top_left, lon_top_left, lat_bottom_right, lon_bottom_right):
+        query = """
+                SELECT * \
+                FROM incidents
+                WHERE latitude BETWEEN %s AND %s
+                  AND longitude BETWEEN %s AND %s
+                  AND status != 'Возвращена'; \
+                """
+        # Поскольку широта уменьшается вниз, а долгота вправо:
+        lat_min = min(lat_top_left, lat_bottom_right)
+        lat_max = max(lat_top_left, lat_bottom_right)
+        lon_min = min(lon_top_left, lon_bottom_right)
+        lon_max = max(lon_top_left, lon_bottom_right)
+
+        with self.get_cursor() as cur:
+            cur.execute(query, (lat_min, lat_max, lon_min, lon_max))
+            return cur.fetchall()
 
 
 if __name__ == '__main__':
